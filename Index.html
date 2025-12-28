@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mikey | Intro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 60%);
+    }
+
+    .card {
+      text-align: center;
+      padding: 20px 30px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 25px rgba(255,255,255,0.15);
+      animation: fadeIn 2s ease-out 1.5s forwards;
+      opacity: 0;
+    }
+
+    .title {
+      font-size: 32px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #ddd;
+      margin-bottom: 2px;
+    }
+
+    .tagline {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #aaa;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Matrix canvas -->
+  <canvas id="matrix"></canvas>
+
+  <!-- Center intro -->
+  <div class="overlay">
+    <div class="card">
+      <div class="title">MIKEY</div>
+      <div class="subtitle">16 • Pakistan</div>
+      <div class="tagline">Entering the system...</div>
+    </div>
+  </div>
+
+  <script>
+    // Basic black & white Matrix rain
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const letters = "01";
+    const fontSize = 16;
+    const columns = () => Math.floor(canvas.width / fontSize);
+    let drops = [];
+
+    function resetDrops() {
+      drops = [];
+      for (let x = 0; x < columns(); x++) {
+        drops[x] = Math.random() * -20;
+      }
+    }
+    resetDrops();
+    window.addEventListener("resize", resetDrops);
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#fff";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.96) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+</html>
